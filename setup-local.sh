@@ -1,0 +1,1 @@
+hdfs dfs -mkdir -f -p /user/root

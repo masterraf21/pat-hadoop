@@ -46,7 +46,7 @@ public class TriangleCount {
             }
 
             for (int i = 0; i < valuesList.size(); ++i) {
-                for (int j = i; j < valuesList.size(); j++) {
+                for (int j = i; j < valuesList.size(); ++j) {
                     int check = valuesList.get(i).compareTo(valuesList.get(j));
                     if (check < 0) {
                         context.write(new Text(valuesList.get(i).toString() + ',' + valuesList.get(j).toString()),
@@ -84,15 +84,15 @@ public class TriangleCount {
 
             // check if closed by checking the $ from previous reduce
             for (String value : valueSet) {
-                if (value.equals("$")) {
-                    isClosed = true;
+                if (!value.equals("$")) {
+                    ++countTriangleCandidates;
                 } else {
-                    countTriangleCandidates++;
+                    isClosed = true;
                 }
             }
 
             // If Closed and count > 0 = closed triplet
-            if (isClosed && countTriangleCandidates > 0) {
+            if (isClosed) {
                 context.write(new LongWritable(0), new LongWritable(countTriangleCandidates));
             }
         }
@@ -128,7 +128,7 @@ public class TriangleCount {
         }
     }
 
-    public static int main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         conf.setInt("mapreduce.task.timeout", 6000000);
 
@@ -144,7 +144,7 @@ public class TriangleCount {
         preprocessingJob.setOutputValueClass(Text.class);
 
         FileInputFormat.addInputPath(preprocessingJob, new Path(args[0]));
-        FileOutputFormat.setOutputPath(preprocessingJob, new Path(args[1] + "-first-mapreduce"));
+        FileOutputFormat.setOutputPath(preprocessingJob, new Path(args[1] + "/1"));
 
         Job countJob = Job.getInstance(conf, "CountTriangle");
         countJob.setJarByClass(TriangleCount.class);
@@ -157,8 +157,8 @@ public class TriangleCount {
         countJob.setOutputKeyClass(LongWritable.class);
         countJob.setOutputValueClass(LongWritable.class);
 
-        FileInputFormat.addInputPath(countJob, new Path(args[1] + "-first-mapreduce"));
-        FileOutputFormat.setOutputPath(countJob, new Path(args[1] + "-second-mapreduce"));
+        FileInputFormat.addInputPath(countJob, new Path(args[1] + "/1"));
+        FileOutputFormat.setOutputPath(countJob, new Path(args[1] + "/2"));
 
         Job sumJob = Job.getInstance(conf, "SumTriangle");
         sumJob.setNumReduceTasks(1);
@@ -172,8 +172,8 @@ public class TriangleCount {
         sumJob.setOutputKeyClass(Text.class);
         sumJob.setOutputValueClass(LongWritable.class);
 
-        FileInputFormat.addInputPath(sumJob, new Path(args[1] + "-second-mapreduce"));
-        FileOutputFormat.setOutputPath(sumJob, new Path(args[1] + "-output"));
+        FileInputFormat.addInputPath(sumJob, new Path(args[1] + "/2"));
+        FileOutputFormat.setOutputPath(sumJob, new Path(args[2]));
 
         int ret = preprocessingJob.waitForCompletion(true) ? 0 : 1;
         if (ret == 0) {
@@ -183,7 +183,10 @@ public class TriangleCount {
             ret = sumJob.waitForCompletion(true) ? 0 : 1;
         }
 
-        return ret;
-
+        long startTime = System.currentTimeMillis();
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        System.out.println("total time - " + Long.toString(estimatedTime));
+        System.exit(ret);
     }
+
 }
