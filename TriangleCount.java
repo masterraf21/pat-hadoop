@@ -175,6 +175,7 @@ public class TriangleCount {
         FileInputFormat.addInputPath(sumJob, new Path(args[1] + "/2"));
         FileOutputFormat.setOutputPath(sumJob, new Path(args[2]));
 
+        long startTime = System.currentTimeMillis();
         int ret = preprocessingJob.waitForCompletion(true) ? 0 : 1;
         if (ret == 0) {
             ret = countJob.waitForCompletion(true) ? 0 : 1;
@@ -183,7 +184,6 @@ public class TriangleCount {
             ret = sumJob.waitForCompletion(true) ? 0 : 1;
         }
 
-        long startTime = System.currentTimeMillis();
         long estimatedTime = System.currentTimeMillis() - startTime;
         System.out.println("total time - " + Long.toString(estimatedTime));
         System.exit(ret);
