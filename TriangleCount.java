@@ -1,11 +1,11 @@
 import java.io.IOException;
 import java.util.*;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
-
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.conf.Configuration;
@@ -128,8 +128,62 @@ public class TriangleCount {
         }
     }
 
-    public static void main(String[] args) {
+    public static int main(String[] args) throws Exception {
         Configuration conf = new Configuration();
+        conf.setInt("mapreduce.task.timeout", 6000000);
+
+        Job preprocessingJob = Job.getInstance(conf, "Preprocessing");
+        preprocessingJob.setJarByClass(TriangleCount.class);
+        preprocessingJob.setMapperClass(PreprocessorMapper.class);
+        preprocessingJob.setReducerClass(PreprocessorReducer.class);
+
+        preprocessingJob.setMapOutputKeyClass(LongWritable.class);
+        preprocessingJob.setMapOutputValueClass(LongWritable.class);
+
+        preprocessingJob.setOutputKeyClass(Text.class);
+        preprocessingJob.setOutputValueClass(Text.class);
+
+        FileInputFormat.addInputPath(preprocessingJob, new Path(args[0]));
+        FileOutputFormat.setOutputPath(preprocessingJob, new Path(args[1] + "-first-mapreduce"));
+
+        Job countJob = Job.getInstance(conf, "CountTriangle");
+        countJob.setJarByClass(TriangleCount.class);
+        countJob.setMapperClass(CountTriangleMapper.class);
+        countJob.setReducerClass(CountTriangleReducer.class);
+
+        countJob.setMapOutputKeyClass(Text.class);
+        countJob.setMapOutputValueClass(Text.class);
+
+        countJob.setOutputKeyClass(LongWritable.class);
+        countJob.setOutputValueClass(LongWritable.class);
+
+        FileInputFormat.addInputPath(countJob, new Path(args[1] + "-first-mapreduce"));
+        FileOutputFormat.setOutputPath(countJob, new Path(args[1] + "-second-mapreduce"));
+
+        Job sumJob = Job.getInstance(conf, "SumTriangle");
+        sumJob.setNumReduceTasks(1);
+        sumJob.setJarByClass(TriangleCount.class);
+        sumJob.setMapperClass(SumTriangleMapper.class);
+        sumJob.setReducerClass(SumTriangleReducer.class);
+
+        sumJob.setMapOutputKeyClass(LongWritable.class);
+        sumJob.setMapOutputValueClass(LongWritable.class);
+
+        sumJob.setOutputKeyClass(Text.class);
+        sumJob.setOutputValueClass(LongWritable.class);
+
+        FileInputFormat.addInputPath(sumJob, new Path(args[1] + "-second-mapreduce"));
+        FileOutputFormat.setOutputPath(sumJob, new Path(args[1] + "-output"));
+
+        int ret = preprocessingJob.waitForCompletion(true) ? 0 : 1;
+        if (ret == 0) {
+            ret = countJob.waitForCompletion(true) ? 0 : 1;
+        }
+        if (ret == 0) {
+            ret = sumJob.waitForCompletion(true) ? 0 : 1;
+        }
+
+        return ret;
 
     }
 }
