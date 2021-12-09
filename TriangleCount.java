@@ -38,21 +38,42 @@ public class TriangleCount {
         protected void reduce(LongWritable key, Iterable<LongWritable> values,
                 Reducer<LongWritable, LongWritable, Text, Text>.Context context)
                 throws IOException, InterruptedException {
-            ArrayList<Long> valuesList = new ArrayList<Long>();
-            for (LongWritable val : values) {
-                valuesList.add(val.get());
-                // emit and imply connected by "$"
-                context.write(new Text(key.toString() + ',' + val.toString()), new Text("$"));
+            SortedSet<Long> valuesSet = new TreeSet<>();
+            Map<String, String> connectedIDMap = new HashMap<>();
+            Map<String, String> candidateMap = new HashMap<>();
+
+            // iterate value
+            while (values.iterator().hasNext()) {
+                LongWritable value = values.iterator().next();
+
+                valuesSet.add(value.get());
+
+                String connectedID = key.toString() + ',' + value.get();
+
+                if (!connectedIDMap.containsKey(connectedID)) {
+                    connectedIDMap.put(connectedID, "$");
+                }
+
+                context.write(new Text(connectedID), new Text("$"));
             }
 
-            for (int i = 0; i < valuesList.size(); ++i) {
-                for (int j = i; j < valuesList.size(); ++j) {
-                    int check = valuesList.get(i).compareTo(valuesList.get(j));
-                    if (check < 0) {
-                        context.write(new Text(valuesList.get(i).toString() + ',' + valuesList.get(j).toString()),
-                                new Text(key.toString()));
-                    }
+            // convert set to list for iterating through possible candidates
+            List<Long> valuesList = new ArrayList<Long>(valuesSet);
 
+            // generate all triangle candidate
+            for (int i = 0; i < valuesList.size(); i++) {
+                for (int j = i + 1; j < valuesList.size(); j++) {
+                    if (valuesList.get(i) != valuesList.get(j)) {
+                        String connectedNodes = valuesList.get(i).toString() + ',' + valuesList.get(j).toString();
+
+                        // put to candidateMap if not written yet
+                        if (!candidateMap.containsKey(connectedNodes)) {
+                            candidateMap.put(connectedNodes, key.toString());
+
+                            // write to output
+                            context.write(new Text(connectedNodes), new Text(key.toString()));
+                        }
+                    }
                 }
             }
         }
