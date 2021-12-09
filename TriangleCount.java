@@ -96,25 +96,26 @@ public class TriangleCount {
                 Reducer<Text, Text, LongWritable, LongWritable>.Context context)
                 throws IOException, InterruptedException {
             Set<String> valueSet = new LinkedHashSet<String>();
-            long countTriangleCandidates = 0;
+            long count = 0;
             boolean isClosed = false;
 
-            for (Text value : values) {
+            while (values.iterator().hasNext()) {
+                Text value = values.iterator().next();
                 valueSet.add(value.toString());
             }
 
             // check if closed by checking the $ from previous reduce
             for (String value : valueSet) {
-                if (!value.equals("$")) {
-                    ++countTriangleCandidates;
-                } else {
+                if (value.equals("$")) {
                     isClosed = true;
+                } else {
+                    count++;
                 }
             }
 
             // If Closed and count > 0 = closed triplet
-            if (isClosed) {
-                context.write(new LongWritable(0), new LongWritable(countTriangleCandidates));
+            if (isClosed && count > 0) {
+                context.write(new LongWritable(0), new LongWritable(count));
             }
         }
     }
@@ -127,7 +128,7 @@ public class TriangleCount {
 
             String[] pair = value.toString().split("\\s+");
             if (pair.length > 1) {
-                context.write(new LongWritable(0), new LongWritable(Long.parseLong(pair[1])));
+                context.write(new LongWritable(Long.parseLong(pair[0])), new LongWritable(Long.parseLong(pair[1])));
             }
 
         }
@@ -140,11 +141,11 @@ public class TriangleCount {
                 throws IOException, InterruptedException {
 
             long sum = 0;
-            for (LongWritable value : values) {
+            while (values.iterator().hasNext()) {
+                LongWritable value = values.iterator().next();
                 sum += value.get();
             }
-
-            context.write(new Text("Result"), new LongWritable(sum));
+            context.write(new Text("Triangle Count: "), new LongWritable(sum));
 
         }
     }
