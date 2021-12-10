@@ -47,12 +47,12 @@ public class TriangleCount {
             while (values.iterator().hasNext()) {
                 LongWritable value = values.iterator().next();
 
-                String connectedID = key.toString() + ',' + value.get();
+                String keyValueNode = key.toString() + ',' + value.get();
 
-                if (!connectedIDMap.containsKey(connectedID)) {
-                    connectedIDMap.put(connectedID, "$");
+                if (!connectedIDMap.containsKey(keyValueNode)) {
+                    connectedIDMap.put(keyValueNode, "$");
                     // write to indicate nodes are connected
-                    context.write(new Text(connectedID), new Text("$"));
+                    context.write(new Text(keyValueNode), new Text("$"));
                 }
 
                 valuesSet.add(value.get());
