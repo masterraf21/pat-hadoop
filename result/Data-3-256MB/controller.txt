@@ -1,0 +1,52 @@
+2021-12-10T10:28:25.038Z INFO Ensure step 4 jar file s3://hadoopxavier/pat-hadoop.jar
+2021-12-10T10:28:25.408Z INFO StepRunner: Created Runner for step 4
+INFO startExec 'hadoop jar /mnt/var/lib/hadoop/steps/s-XE2HXSTUGQ89/pat-hadoop.jar s3://hadoopxavier/big1.5-twit.txt s3://hadoopxavier/t7909 s3://hadoopxavier/o7090'
+INFO Environment:
+  PATH=/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/opt/aws/puppet/bin/
+  SECURITY_PROPERTIES=/emr/instance-controller/lib/security.properties
+  HISTCONTROL=ignoredups
+  HISTSIZE=1000
+  HADOOP_ROOT_LOGGER=INFO,DRFA
+  JAVA_HOME=/etc/alternatives/jre
+  AWS_DEFAULT_REGION=us-east-1
+  LANG=en_US.UTF-8
+  MAIL=/var/spool/mail/hadoop
+  LOGNAME=hadoop
+  PWD=/
+  HADOOP_CLIENT_OPTS=-Djava.io.tmpdir=/mnt/var/lib/hadoop/steps/s-XE2HXSTUGQ89/tmp
+  _=/etc/alternatives/jre/bin/java
+  LESSOPEN=||/usr/bin/lesspipe.sh %s
+  SHELL=/bin/bash
+  QTINC=/usr/lib64/qt-3.3/include
+  USER=hadoop
+  HADOOP_LOGFILE=syslog
+  HOSTNAME=ip-172-31-29-55
+  QTDIR=/usr/lib64/qt-3.3
+  HADOOP_LOG_DIR=/mnt/var/log/hadoop/steps/s-XE2HXSTUGQ89
+  EMR_STEP_ID=s-XE2HXSTUGQ89
+  QTLIB=/usr/lib64/qt-3.3/lib
+  HOME=/home/hadoop
+  SHLVL=1
+  HADOOP_IDENT_STRING=hadoop
+INFO redirectOutput to /mnt/var/log/hadoop/steps/s-XE2HXSTUGQ89/stdout
+INFO redirectError to /mnt/var/log/hadoop/steps/s-XE2HXSTUGQ89/stderr
+INFO Working dir /mnt/var/lib/hadoop/steps/s-XE2HXSTUGQ89
+INFO ProcessRunner started child process 24619
+2021-12-10T10:28:25.410Z INFO HadoopJarStepRunner.Runner: startRun() called for s-XE2HXSTUGQ89 Child Pid: 24619
+INFO Synchronously wait child process to complete : hadoop jar /mnt/var/lib/hadoop/steps/s-XE2HXSTU...
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO Process 24619 still running
+INFO waitProcessCompletion ended with exit code 0 : hadoop jar /mnt/var/lib/hadoop/steps/s-XE2HXSTU...
+INFO total process run time: 11568 seconds
+2021-12-10T13:41:14.065Z INFO Step created jobs: job_1639131146824_0001,job_1639131146824_0002,job_1639131146824_0003
+2021-12-10T13:41:14.065Z INFO Step succeeded with exitCode 0 and took 11568 seconds

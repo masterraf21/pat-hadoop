@@ -1,0 +1,42 @@
+2021-12-10T05:49:16.982Z INFO Ensure step 2 jar file s3://hadoopxavier/pat-hadoop.jar
+2021-12-10T05:49:17.833Z INFO StepRunner: Created Runner for step 2
+INFO startExec 'hadoop jar /mnt/var/lib/hadoop/steps/s-2K3QTHVVCGOEE/pat-hadoop.jar s3://hadoopxavier/smol-twit.txt s3://hadoopxavier/t8909 s3://hadoopxavier/o8090'
+INFO Environment:
+  PATH=/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/opt/aws/puppet/bin/
+  SECURITY_PROPERTIES=/emr/instance-controller/lib/security.properties
+  HISTCONTROL=ignoredups
+  HISTSIZE=1000
+  HADOOP_ROOT_LOGGER=INFO,DRFA
+  JAVA_HOME=/etc/alternatives/jre
+  AWS_DEFAULT_REGION=us-east-1
+  LANG=en_US.UTF-8
+  MAIL=/var/spool/mail/hadoop
+  LOGNAME=hadoop
+  PWD=/
+  HADOOP_CLIENT_OPTS=-Djava.io.tmpdir=/mnt/var/lib/hadoop/steps/s-2K3QTHVVCGOEE/tmp
+  _=/etc/alternatives/jre/bin/java
+  LESSOPEN=||/usr/bin/lesspipe.sh %s
+  SHELL=/bin/bash
+  QTINC=/usr/lib64/qt-3.3/include
+  USER=hadoop
+  HADOOP_LOGFILE=syslog
+  HOSTNAME=ip-172-31-21-181
+  QTDIR=/usr/lib64/qt-3.3
+  HADOOP_LOG_DIR=/mnt/var/log/hadoop/steps/s-2K3QTHVVCGOEE
+  EMR_STEP_ID=s-2K3QTHVVCGOEE
+  QTLIB=/usr/lib64/qt-3.3/lib
+  HOME=/home/hadoop
+  SHLVL=1
+  HADOOP_IDENT_STRING=hadoop
+INFO redirectOutput to /mnt/var/log/hadoop/steps/s-2K3QTHVVCGOEE/stdout
+INFO redirectError to /mnt/var/log/hadoop/steps/s-2K3QTHVVCGOEE/stderr
+INFO Working dir /mnt/var/lib/hadoop/steps/s-2K3QTHVVCGOEE
+INFO ProcessRunner started child process 18787
+2021-12-10T05:49:17.837Z INFO HadoopJarStepRunner.Runner: startRun() called for s-2K3QTHVVCGOEE Child Pid: 18787
+INFO Synchronously wait child process to complete : hadoop jar /mnt/var/lib/hadoop/steps/s-2K3QTHVV...
+INFO Process 18787 still running
+INFO Process 18787 still running
+INFO waitProcessCompletion ended with exit code 0 : hadoop jar /mnt/var/lib/hadoop/steps/s-2K3QTHVV...
+INFO total process run time: 2122 seconds
+2021-12-10T06:24:40.037Z INFO Step created jobs: job_1639115060244_0001,job_1639115060244_0002,job_1639115060244_0003
+2021-12-10T06:24:40.037Z INFO Step succeeded with exitCode 0 and took 2122 seconds
