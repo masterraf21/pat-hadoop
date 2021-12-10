@@ -38,6 +38,7 @@ public class TriangleCount {
         protected void reduce(LongWritable key, Iterable<LongWritable> values,
                 Reducer<LongWritable, LongWritable, Text, Text>.Context context)
                 throws IOException, InterruptedException {
+
             SortedSet<Long> valuesSet = new TreeSet<>();
             Map<String, String> connectedIDMap = new HashMap<>();
             Map<String, String> candidateMap = new HashMap<>();
@@ -46,15 +47,16 @@ public class TriangleCount {
             while (values.iterator().hasNext()) {
                 LongWritable value = values.iterator().next();
 
-                valuesSet.add(value.get());
-
                 String connectedID = key.toString() + ',' + value.get();
 
                 if (!connectedIDMap.containsKey(connectedID)) {
                     connectedIDMap.put(connectedID, "$");
+                    // write to indicate nodes are connected
+                    context.write(new Text(connectedID), new Text("$"));
                 }
 
-                context.write(new Text(connectedID), new Text("$"));
+                valuesSet.add(value.get());
+
             }
 
             // convert set to list for iterating through possible candidates
@@ -64,7 +66,8 @@ public class TriangleCount {
             for (int i = 0; i < valuesList.size(); i++) {
                 for (int j = i + 1; j < valuesList.size(); j++) {
                     if (valuesList.get(i) != valuesList.get(j)) {
-                        String connectedNodes = valuesList.get(i).toString() + ',' + valuesList.get(j).toString();
+                        String connectedNodes = valuesList.get(i).toString() + ',' +
+                                valuesList.get(j).toString();
 
                         // put to candidateMap if not written yet
                         if (!candidateMap.containsKey(connectedNodes)) {
@@ -148,6 +151,7 @@ public class TriangleCount {
             context.write(new Text("Triangle Count: "), new LongWritable(sum));
 
         }
+
     }
 
     public static void main(String[] args) throws Exception {
